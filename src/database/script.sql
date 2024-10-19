@@ -1,5 +1,6 @@
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
+CREATE SCHEMA fazenda;
+
+SET search_path TO fazenda;
 
 CREATE TYPE status_galpao AS ENUM('vazio','cheio','utilizado');
 
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS Cliente (
 -- Table Galpao
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Galpao (
-  id_galpao INT NOT NULL,
+  id_galpao SERIAL NOT NULL,
   capacidade FLOAT NOT NULL,
   status status_galpao NOT NULL,
   PRIMARY KEY (id_galpao));

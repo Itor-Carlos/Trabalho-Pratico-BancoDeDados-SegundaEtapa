@@ -3,10 +3,12 @@ function verificaPropriedadesFaltantes(objetoJson, classeComparativa) {
     const propriedadesClasseComparativa = Object.keys(instanciaClasseComparativa);
   
     const propriedadesFaltantes = propriedadesClasseComparativa.filter(prop => !objetoJson.hasOwnProperty(prop));
-  
-    return propriedadesFaltantes;
+    
+    const objectRequest = {}
+
+    propriedadesFaltantes.forEach(item => objectRequest[item] = item.concat(' is required'));
+    
+    return objectRequest;
 }
 
-export default {
-    verificaPropriedadesFaltantes
-}
+export default verificaPropriedadesFaltantes;
