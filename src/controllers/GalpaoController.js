@@ -1,6 +1,7 @@
 import GalpaoRepository from "../repositories/GalpaoRepository.js";
 import verificaPropriedadesFaltantes from "../utils.js"
 import Galpao from "../models/Galpao.js";
+import Joi from "joi";
 
 const statusEnum = {
     VAZIO: "vazio",
@@ -8,41 +9,56 @@ const statusEnum = {
     UTILIZADO: "utilizado"
 };
 
+function validaStatus(status) {
+    return Object.values(statusEnum).includes(status);
+}
+
+const galpaoSchema = Joi.object({
+    capacidade: Joi.number().min(1).required().messages({
+        "number.base": "capacidade deve ser um número",
+        "number.min": "capacidade deve ser maior ou igual a 1",
+        "any.required": "capacidade é obrigatória"
+    }),
+    status: Joi.string().valid("vazio", "cheio", "utilizado").required().messages({
+        "string.base": "status deve ser uma string",
+        "any.only": "status deve ser um dos seguintes: vazio, cheio, utilizado",
+        "any.required": "status é obrigatório"
+    }),
+});
+
 class GalpaoController {
     async getAll(request, response){
         const responseQuery = await GalpaoRepository.getAll();
         return response.status(200).send(responseQuery);
     }
 
-    async createGalpao(request, response){
-        const bodyRequest = request.body;
-        const missingProperties = verificaPropriedadesFaltantes(bodyRequest, Galpao);
-        if(Object.keys(missingProperties).length === 0){
-            if(!Object.values(statusEnum).includes(bodyRequest.status)){
-                return response.status(400).send({
-                    "error": "O valor de status deve ser um dos três tipos a seguir: vazio, cheio, utilizado"
-                })
-            }
-
-            const galpaoCreated = await GalpaoRepository.createGalpao(bodyRequest);
-            if(galpaoCreated.length > 0) response.status(201).send(galpaoCreated[0])
+    async createGalpao(request, response) {
+        const { error, value } = galpaoSchema.validate(request.body, { abortEarly: false });
+    
+        if (error) {
+            const errorMessages = error.details.reduce((errorAcc, detailError) => {
+                errorAcc[detailError.context.key] = detailError.message;
+                return errorAcc;
+            }, {});
+    
+            return response.status(400).json(errorMessages);
         }
-        return response.status(400).send(missingProperties);
+    
+        const galpaoCreated = await GalpaoRepository.createGalpao(value);
+        return response.status(201).json(galpaoCreated);
     }
 
-    async deleteGalpao(request, response){
-        const {id} = request.params;
-        // if(!id) return response.status(400).send({
-        //     "error": "O id do galpão é necessário"
-        // })
-        const galpao = await GalpaoRepository.deleteById(id);
+    async deleteGalpao(request, response) {
+        try {
+            const { id } = request.params;
+            const galpao = await GalpaoRepository.deleteById(id);
 
-        return galpao ? response.status(200).send({
-            "message": "Galpão deletado com sucesso"
-        }) : response.status(404).send({
-            "error": "O galpão informado não existe"
-        })
+            return galpao ? response.status(204).send() : response.status(404).json({ error: "O galpão informado não existe" });
+        } catch (error) {
+            return response.status(500).json({ error: "Erro interno ao deletar galpão" });
+        }
     }
+    
 
     async updateGalpao(request, response){
         const {id} = request.params;
@@ -50,10 +66,10 @@ class GalpaoController {
         const {capacidade, status} = request.body;
 
         if(status){
-            if(!Object.values(statusEnum).includes(status)){
-                return response.status(400).send({
-                    "error": "O valor de status deve ser um dos três tipos a seguir: vazio, cheio, utilizado"
-                })
+            if (!validaStatus(bodyRequest.status)) {
+                return response.status(400).json({
+                    error: "O valor de status deve ser um dos três tipos a seguir: vazio, cheio, utilizado"
+                });
             }
         }
         const galpaoUpdated = await GalpaoRepository.updateGalpao(id,{capacidade, status});

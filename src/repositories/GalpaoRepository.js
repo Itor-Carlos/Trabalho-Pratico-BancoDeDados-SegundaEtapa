@@ -30,29 +30,32 @@ class GalpaoRepository{
         return true;
     }
 
-    async updateGalpao(idGalpao,{capacidade, status}){
-        let query = "UPDATE Galpao SET ";
-        const values = []
+    async updateGalpao(idGalpao, { capacidade, status }) {
+        let updates = [];
+        let values = [];
         let contador = 1;
-        if(capacidade){
-            query += `capacidade = $${contador}`
-            contador++;
-            values.push(capacidade)
+    
+        if (capacidade) {
+            updates.push(`capacidade = $${contador++}`);
+            values.push(capacidade);
         }
-        if(status){
-            if(contador>1){
-                query += `,`
-            }
-            query += `status = $${contador}`
-            contador++;
-            values.push(status)
-            console.log(status,values)
+    
+        if (status) {
+            updates.push(`status = $${contador++}`);
+            values.push(status);
         }
-
-        query += ` WHERE id_galpao = $${contador} RETURNING id_galpao, capacidade, status`
-        values.push(idGalpao)
+    
+        values.push(idGalpao);
+    
+        const query = `
+            UPDATE Galpao 
+            SET ${updates.join(', ')} 
+            WHERE id_galpao = $${contador}
+            RETURNING id_galpao, capacidade, status
+        `;
+    
         const row = await conexaoPostgres.query(query, values);
-        return row.rows
+        return row.rows;
     }
 }
 
