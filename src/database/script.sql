@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Produto (
 -- Table Area
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Area (
-  id_area INT NOT NULL,
+  id_area SERIAL NOT NULL,
   tamanho_hectar FLOAT NOT NULL,
   localizacao VARCHAR(45) NOT NULL,
   colheita_disponivel BOOLEAN NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Area (
 -- Table Saca
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Saca (
-  id_saca INT NOT NULL,
+  id_saca SERIAL NOT NULL,
   peso FLOAT NOT NULL,
   Area_id_area INT NOT NULL,
   PRIMARY KEY (id_saca),
