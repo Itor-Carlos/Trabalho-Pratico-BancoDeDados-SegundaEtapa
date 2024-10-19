@@ -1,7 +1,8 @@
 import GalpaoRepository from "../repositories/GalpaoRepository.js";
-import verificaPropriedadesFaltantes from "../utils.js"
 import Galpao from "../models/Galpao.js";
 import Joi from "joi";
+import validarSchema from "../utils.js"
+
 
 const statusEnum = {
     VAZIO: "vazio",
@@ -33,18 +34,10 @@ class GalpaoController {
     }
 
     async createGalpao(request, response) {
-        const { error, value } = galpaoSchema.validate(request.body, { abortEarly: false });
+        const errors = validarSchema(galpaoSchema, request.body);
+        if(errors) return response.status(400).send(errors)
     
-        if (error) {
-            const errorMessages = error.details.reduce((errorAcc, detailError) => {
-                errorAcc[detailError.context.key] = detailError.message;
-                return errorAcc;
-            }, {});
-    
-            return response.status(400).json(errorMessages);
-        }
-    
-        const galpaoCreated = await GalpaoRepository.createGalpao(value);
+        const galpaoCreated = await GalpaoRepository.createGalpao(request.body);
         return response.status(201).json(galpaoCreated);
     }
 
