@@ -1,6 +1,7 @@
 import { Router } from "express";
 import GalpaoController from "./controllers/GalpaoController.js";
 import AreaController from "./controllers/AreaController.js";
+import SacaController from "./controllers/SacaController.js";
 
 const router = Router();
 
@@ -13,5 +14,10 @@ router.get('/area', AreaController.getAll);
 router.post('/area', AreaController.createArea)
 router.delete('/area/:id', AreaController.deleteArea)
 router.put('/area/:id', AreaController.updateArea)
+
+router.get('/saca', SacaController.getAll);
+router.post('/saca', SacaController.createSaca);
+router.delete('/saca/:id', SacaController.deleteSaca);
+router.put('/saca/:id', SacaController.updateSaca)
 
 export default router;
