@@ -5,7 +5,7 @@ SET search_path TO fazenda;
 CREATE TYPE status_galpao AS ENUM('vazio','cheio','utilizado');
 
 CREATE TABLE IF NOT EXISTS Produto (
-  id_produto INT NOT NULL,
+  id_produto SERIAL NOT NULL,
   nome_produto VARCHAR(45) NOT NULL,
   PRIMARY KEY (id_produto));
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Saca (
 -- Table Grao
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Grao (
-  id_grao INT NOT NULL,
+  id_grao SERIAL NOT NULL,
   Produto_id_produto INT NOT NULL,
   tipo_grao VARCHAR(45) NOT NULL,
   PRIMARY KEY (id_grao),
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS Grao (
 -- Table Silo
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Silo (
-  id_silo INT NOT NULL,
+  id_silo SERIAL NOT NULL,
   cheio BOOLEAN NOT NULL,
   capacidade INT NOT NULL,
   PRIMARY KEY (id_silo));
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS Galpao (
 -- Table Tipo_maquinario
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Tipo_maquinario (
-  id_tipo_maquinario INT NOT NULL,
+  id_tipo_maquinario SERIAL NOT NULL,
   nome_maquinario VARCHAR(45) NOT NULL,
   PRIMARY KEY (id_tipo_maquinario));
 
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS Tipo_maquinario (
 -- Table Maquinario
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Maquinario (
-  id_maquinario INT NOT NULL,
+  id_maquinario SERIAL NOT NULL,
   tipo_maquinario VARCHAR(45) NOT NULL,
   id_tipo_maquinario INT NOT NULL,
   PRIMARY KEY (id_maquinario),
@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS Maquinario (
 -- Table EnvioCarga
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS EnvioCarga (
-  id_envio_carga INT NOT NULL,
+  id_envio_carga SERIAL NOT NULL,
   destino VARCHAR(45) NOT NULL,
   data_envio DATE NULL,
   PRIMARY KEY (id_envio_carga));
@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS EnvioCarga (
 -- Table Transacao
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Transacao (
-  idTransacao INT NOT NULL,
+  idTransacao SERIAL NOT NULL,
   Fornecedor_Pessoa_documento INT NULL,
   Cliente_Pessoa_documento INT NULL,
   valor FLOAT NOT NULL,
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS Transacao (
 -- Table Fertilizante
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Fertilizante (
-  idfertilizante INT NOT NULL,
+  idfertilizante SERIAL NOT NULL,
   Produto_id_produto INT NOT NULL,
   nome_produto VARCHAR(45) NOT NULL,
   validade TIMESTAMP NOT NULL,
@@ -353,7 +353,7 @@ CREATE TABLE IF NOT EXISTS Galpao_has_Saca (
 -- Table Manutencoes
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Manutencoes (
-  id_manutencao INT NOT NULL,
+  id_manutencao SERIAL NOT NULL,
   Maquinario_id_maquinario INT NOT NULL,
   data_manutencao TIMESTAMP NOT NULL,
   descricao_manutencao VARCHAR(45) NULL,
