@@ -25,5 +25,6 @@ router.post('/armazena-saca-galpao', GalpaoHasSacaController.adicionaSacaGalpao)
 router.get('/pega-saca-galpao/:id_galpao', GalpaoHasSacaController.pegaSacasGalpao);
 router.delete('/remove-saca-galpao', GalpaoHasSacaController.removeSacaGalpao);
 router.put('/edita-saca-galpao', GalpaoHasSacaController.moveSacaGalpao)
+router.post("/galpao-sacas/armazena-multiplas-sacas", GalpaoHasSacaController.adicionaMultiplasSacasGalpao);
 
 export default router;

@@ -16,6 +16,18 @@ const galpasHasSacaSchema = Joi.object({
     })
 });
 
+const adicionaMultiplasSacasSchema = Joi.object({
+    Galpao_id_galpao: Joi.number().integer().required().messages({
+        "number.base": "Galpao_id_galpao deve ser um número",
+        "any.required": "Galpao_id_galpao é obrigatório"
+    }),
+    Saca_id_sacas: Joi.array().items(Joi.number().integer()).required().messages({
+        "array.base": "Saca_id_sacas deve ser um array de números inteiros",
+        "any.required": "Saca_id_sacas é obrigatório"
+    })
+});
+
+
 class GalpaoHasSacaController {
     async adicionaSacaGalpao(request, response) {
         const { Galpao_id_galpao, Saca_id_saca } = request.body;
@@ -96,6 +108,34 @@ class GalpaoHasSacaController {
 
         const updatedRelation = await GalpaoHasSacaRepository.moveSacaGalpao(Galpao_id_galpao_atual, Saca_id_saca, Galpao_id_novo);
         return response.status(200).json(updatedRelation);
+    }
+
+
+    async adicionaMultiplasSacasGalpao(request, response) {
+        const { Galpao_id_galpao, Saca_id_sacas } = request.body;
+
+        const errors = validarSchema(adicionaMultiplasSacasSchema, request.body);
+        if (errors) return response.status(400).send(errors);
+
+        const galpaoExists = await GalpaoRepository.findById(Galpao_id_galpao);
+        if (!galpaoExists) {
+            return response.status(404).json({ error: "O galpão informado não existe" });
+        }
+
+        for (let sacaId of Saca_id_sacas) {
+            const sacaExists = await SacaRepository.findById(sacaId);
+            if (!sacaExists) {
+                return response.status(404).json({ error: `A saca com o ID informado (${sacaId}) não existe` });
+            }
+        }
+
+        const result = await GalpaoHasSacaRepository.adicionaMultiplasSacasGalpao(Galpao_id_galpao, Saca_id_sacas);
+
+        if (!result.success) {
+            return response.status(500).json({ error: result.message });
+        }
+
+        return response.status(201).json({ message: result.message });
     }
 }
 

@@ -39,6 +39,25 @@ class GalpaoHasSacaRepository {
         );
         return result.rows[0];
     }
+
+    async adicionaMultiplasSacasGalpao(galpaoId, sacaIds) {
+        try {
+            await conexaoPostgres.query('BEGIN');
+    
+            for (let sacaId of sacaIds) {
+                await conexaoPostgres.query(
+                    'INSERT INTO Galpao_has_Saca (Galpao_id_galpao, Saca_id_saca) VALUES ($1, $2)',
+                    [galpaoId, sacaId]
+                );
+            }
+            await conexaoPostgres.query('COMMIT');
+            return { success: true, message: "Sacas adicionadas ao galpão com sucesso." };
+        } catch (error) {
+            await conexaoPostgres.query('ROLLBACK');
+            console.log(error.message)
+            return { success: false, message: error.message};
+        }
+    }
 }
 
 export default new GalpaoHasSacaRepository();
