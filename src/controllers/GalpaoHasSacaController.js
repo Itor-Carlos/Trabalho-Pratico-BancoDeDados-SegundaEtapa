@@ -135,7 +135,7 @@ class GalpaoHasSacaController {
             return response.status(500).json({ error: result.message });
         }
 
-        return response.status(201).json({ message: result.message });
+        return response.status(201).json({ galpao: result.data });
     }
 }
 

@@ -50,8 +50,11 @@ class GalpaoHasSacaRepository {
                     [galpaoId, sacaId]
                 );
             }
+
+            const row = await conexaoPostgres.query("SELECT * FROM Saca INNER JOIN Galpao_has_Saca ON Saca.id_saca = Galpao_has_Saca.Saca_id_saca WHERE Galpao_has_Saca.Galpao_id_galpao = $1",[galpaoId]);
+
             await conexaoPostgres.query('COMMIT');
-            return { success: true, message: "Sacas adicionadas ao galpão com sucesso." };
+            return { success: true, message: "Sacas adicionadas ao galpão com sucesso.", data: row.rows};
         } catch (error) {
             await conexaoPostgres.query('ROLLBACK');
             console.log(error.message)
