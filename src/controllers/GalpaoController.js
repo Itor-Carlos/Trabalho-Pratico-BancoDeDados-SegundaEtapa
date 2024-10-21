@@ -59,7 +59,7 @@ class GalpaoController {
         const {capacidade, status} = request.body;
 
         if(status){
-            if (!validaStatus(bodyRequest.status)) {
+            if (!validaStatus(status)) {
                 return response.status(400).json({
                     error: "O valor de status deve ser um dos três tipos a seguir: vazio, cheio, utilizado"
                 });
