@@ -58,6 +58,12 @@ class GalpaoController {
 
         const {capacidade, status} = request.body;
 
+        const galpaoExists = await GalpaoRepository.findById(id);
+
+        if(!galpaoExists) return response.status(400).json({
+            error: "O galpão informado não existe"
+        })
+
         if(status){
             if (!validaStatus(status)) {
                 return response.status(400).json({
